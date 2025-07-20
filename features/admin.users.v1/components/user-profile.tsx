@@ -221,6 +221,7 @@ export const UserProfile: FunctionComponent<UserProfilePropsInterface> = (
         if (connectorProperties && Array.isArray(connectorProperties) && connectorProperties?.length > 0) {
 
             const accountConfigSettings: AccountConfigSettingsInterface = { ...configSettings } ;
+            console.log("Connector properties: ", connectorProperties);
 
             for (const property of connectorProperties) {
                 if (PASSWORD_RESET_PROPERTIES.includes(property.name)) {
@@ -1152,6 +1153,16 @@ export const UserProfile: FunctionComponent<UserProfilePropsInterface> = (
                 }
             }
             if (accountLockedReason === AccountLockedReason.PENDING_ASK_PASSWORD) {
+                console.log("Pending ask password state detected.");
+                if (isAskPasswordEmailOTPEnabled()) {
+                    console.log("1");
+                    return RecoveryScenario.ASK_PASSWORD_VIA_EMAIL_OTP;
+                }
+                if (isAskPasswordSMSOTPEnabled()) {
+                    console.log("2");
+                    return RecoveryScenario.ASK_PASSWORD_VIA_SMS_OTP;
+                }
+                console.log("3");
                 return RecoveryScenario.ASK_PASSWORD;
             }
         }
@@ -1258,6 +1269,34 @@ export const UserProfile: FunctionComponent<UserProfilePropsInterface> = (
         const property: ConnectorPropertyInterface | undefined = connectorProperties?.find(
             (property: ConnectorPropertyInterface) =>
                 property.name === ServerConfigurationsConstants.ADMIN_FORCE_PASSWORD_RESET_EMAIL_OTP
+        );
+
+        return property?.value === "true";
+    };
+
+    /**
+     * Checks if ask password via Email OTP is enabled.
+     *
+     * @returns true if enabled, false otherwise
+     */
+    const isAskPasswordEmailOTPEnabled = (): boolean => {
+        const property: ConnectorPropertyInterface | undefined = connectorProperties?.find(
+            (property: ConnectorPropertyInterface) =>
+                property.name === ServerConfigurationsConstants.ASK_PASSWORD_EMAIL_OTP
+        );
+
+        return property?.value === "true";
+    };
+
+    /**
+     * Checks if ask password via SMS OTP is enabled.
+     *
+     * @returns true if enabled, false otherwise
+     */
+    const isAskPasswordSMSOTPEnabled = (): boolean => {
+        const property: ConnectorPropertyInterface | undefined = connectorProperties?.find(
+            (property: ConnectorPropertyInterface) =>
+                property.name === ServerConfigurationsConstants.ASK_PASSWORD_SMS_OTP
         );
 
         return property?.value === "true";

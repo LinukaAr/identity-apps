@@ -3703,14 +3703,87 @@ export const extensions: Extensions = {
                         "<3>user</3> account in the organization."
                 },
                 inviteUserToSetPassword: {
+                    heading: "Invite User to Set Password",
+                    connectorDescription: "Configure how users are invited to set their passwords during user onboarding and account creation.",
+                    form: {
+                        fields: {
+                            enableInviteUserToSetPassword: {
+                                label: "Enable invite user to set password",
+                                hint: "When enabled, users will receive an invitation to set their password via email or SMS."
+                            },
+                            enableEmailBasedAskPassword: {
+                                label: "Enable email invitations",
+                                hint: "When enabled, users will receive an email invitation with instructions to set their password."
+                            },
+                            enableSMSBasedAskPassword: {
+                                label: "Enable SMS invitations",
+                                hint: "When enabled, users will receive an SMS invitation with an OTP to set their password."
+                            },
+                            emailAskPasswordOptions: {
+                                header: "Choose invitation method",
+                                emailLink: {
+                                    label: "Email with password setup link"
+                                },
+                                emailOtp: {
+                                    label: "Email with OTP code"
+                                },
+                                smsOtp: {
+                                    label: "SMS with OTP code"
+                                }
+                            },
+                            enableAccountActivationEmail: {
+                                label: "Send account activation notification",
+                                hint: "When enabled, users will receive a confirmation email after their account is successfully activated."
+                            },
+                            enableAccountLockOnCreation: {
+                                label: "Lock account until password is set",
+                                hint: "When enabled, the user account will be locked upon creation."
+                            },
+                            expiryTime: {
+                                label: "Invitation link/OTP expiry time",
+                                placeholder: "Enter expiry time in minutes",
+                                validations: {
+                                    invalid: "Recovery link/OTP expiry time should be an integer.",
+                                    empty: "Recovery link/OTP expiry time cannot be empty.",
+                                    range:
+                                        "Recovery link/OTP expiry time should be between 1 minute & 10080 minutes " +
+                                        "(7 days).",
+                                    maxLengthReached:
+                                        "Recovery link/OTP expiry time should be a number with 5 or less " + "digits."
+                                }
+                            },
+                            askPasswordOtpUseUppercase: {
+                                label: "Include uppercase letters in OTP",
+                                hint: "When enabled, the generated OTP codes will include uppercase letters (A-Z)."
+                            },
+                            askPasswordOtpUseLowercase: {
+                                label: "Include lowercase letters in OTP",
+                                hint: "When enabled, the generated OTP codes will include lowercase letters (a-z)."
+                            },
+                            askPasswordOtpUseNumeric: {
+                                label: "Include numbers in OTP",
+                                hint: "When enabled, the generated OTP codes will include numeric digits (0-9)."
+                            },
+                            askPasswordOtpLength: {
+                                label: "OTP code length",
+                                hint: "Set the number of characters in the generated OTP codes.",
+                                validations: {
+                                    empty: "OTP code length cannot be empty.",
+                                    invalid: "OTP code length should be an integer.",
+                                    range: "OTP code length should be between 4 and 10."
+                                }
+                            }
+                        }
+                    },
+                    otpConfigHeading: "OTP Code Configuration",
                     notification: {
                         error: {
-                            description: "Failed to update the configuration for the Invite User to Set Password connector.",
-                            message: "Error updating configuration"
+                            description: "An error occurred while updating the invite user to set password configuration. Please try again.",
+                            message: "Configuration update failed"
                         },
                         success: {
-                            description: "Successfully updated the configuration for the Invite User to Set Password connector.",
-                            message: "Update successful"
+                            description: "The invite user to set password configuration has been successfully updated.",
+                            message: "Configuration updated successfully"
                         }
                     }
                 },

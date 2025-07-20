@@ -3050,6 +3050,35 @@ export interface Extensions {
                     subHeading: string;
                 };
                 inviteUserToSetPassword: {
+                    heading: string;
+                    form: {
+                        fields: {
+                            enableInviteUserToSetPassword: FormAttributes;
+                            enableEmailBasedAskPassword: FormAttributes;
+                            enableSMSBasedAskPassword: FormAttributes;
+                            emailAskPasswordOptions: {
+                                header: string;
+                                emailLink: {
+                                    label: string;
+                                },
+                                emailOtp: {
+                                    label: string;
+                                },
+                                smsOtp: {
+                                    label: string;
+                                }
+                            };
+                            expiryTime: FormAttributes;
+                            enableAccountActivationEmail: FormAttributes;
+                            enableAccountLockOnCreation: FormAttributes;
+                            askPasswordOtpUseUppercase: FormAttributes;
+                            askPasswordOtpUseLowercase: FormAttributes;
+                            askPasswordOtpUseNumeric: FormAttributes;
+                            askPasswordOtpLength: FormAttributes;
+                        };
+                    };
+                    otpConfigHeading: string;
+                    connectorDescription: string;
                     notification: {
                         error: NotificationItem;
                         success: NotificationItem;
