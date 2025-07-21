@@ -228,7 +228,8 @@ export const user: userNS = {
                 emailVerificationDisabled: "To invite users to set the password, enable email invitations " +
                     "for user password setup from <1>Login & Registration settings</1>.",
                 inviteOffline: "Invite offline",
-                inviteViaEmail: "Invite via email"
+                inviteViaEmail: "Invite via email",
+                inviteViaSMS: "Invite via SMS"
             },
             buttons: {
                 next: "Next",

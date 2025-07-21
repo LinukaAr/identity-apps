@@ -2768,7 +2768,11 @@ export interface Extensions {
                         alphanumericUsernamePlaceholder: string;
                         emailUsername: string;
                     }
-                    inviteUserTooltip: string;
+                    inviteUserTooltip: {
+                        emailLinkInviteTooltip: string;
+                        emailOTPInviteTooltip: string;
+                        smsOTPInviteTooltip: string;
+                    };
                     inviteUserOfflineTooltip: string;
                     inviteLink: {
                         error: {

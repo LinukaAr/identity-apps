@@ -6829,6 +6829,7 @@ export interface ConsoleNS {
                             alphanumericUsernameEnabled: string;
                             inviteViaEmail: string;
                             inviteOffline: string;
+                            inviteViaSMS: string;
                         };
                         steps: {
                             basicDetails: string;

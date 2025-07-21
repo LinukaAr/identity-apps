@@ -2812,9 +2812,11 @@ export const extensions: Extensions = {
                         alphanumericUsernamePlaceholder: "Enter the username",
                         emailUsername: "Username (Email)"
                     },
-                    inviteUserTooltip:
-                        "An email with a confirmation link will be sent to the " +
-                        "provided email address for the user to set their own password.",
+                    inviteUserTooltip: {
+                        emailLinkInviteTooltip: "An email with a confirmation link will be sent to the provided email address for the user to set their own password.",
+                        emailOTPInviteTooltip: "An email invitation with an OTP will be sent to the provided email address for the user to set their own password.",
+                        smsOTPInviteTooltip: "An SMS notification with an OTP will be sent to the provided phone number for the user to set their own password."
+                    },
                     inviteUserOfflineTooltip: "You can copy the invitation link or the invitation" +
                         " during the final step to share with the user.",
                     inviteLink: {
