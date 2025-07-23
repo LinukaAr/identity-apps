@@ -631,6 +631,35 @@ export const AddUserUpdated: React.FunctionComponent<AddUserProps> = (
     const isAlphanumericUsernameEnabled = (): boolean => usernameConfig?.enableValidator === "true";
 
     /**
+     * Check whether mobile field is available for user creation.
+     *
+     * @returns isMobileFieldAvailable - whether mobile field is available.
+     */
+    const isMobileFieldAvailable = (): boolean => {
+        if (!isAttributeProfileForUserCreationEnabled || !profileSchema) {
+            return false;
+        }
+
+        const mobileNumbersSchema: ProfileSchemaInterface = profileSchema?.find(
+            (schema: ProfileSchemaInterface) => schema.name === MOBILE_NUMBERS_ATTRIBUTE);
+        const mobileSchema: ProfileSchemaInterface = profileSchema?.find(
+            (schema: ProfileSchemaInterface) => schema.name === MOBILE_ATTRIBUTE);
+
+        // Check if multiple mobile numbers field is available
+        if (isMultipleEmailAndMobileNumberEnabled && mobileNumbersSchema &&
+            isFieldDisplayableInUserCreationWizard(mobileNumbersSchema, isDistinctAttributeProfilesDisabled)) {
+            return true;
+        }
+
+        // Check if single mobile field is available
+        if (isFieldDisplayableInUserCreationWizard(mobileSchema, isDistinctAttributeProfilesDisabled)) {
+            return true;
+        }
+
+        return false;
+    };
+
+    /**
      * Callback function to validate password.
      *
      * @param valid - validation status.
@@ -1014,6 +1043,31 @@ export const AddUserUpdated: React.FunctionComponent<AddUserProps> = (
             );
         }
 
+        if (askPasswordVerificationOption === VerificationOption.SMS_OTP && !isMobileFieldAvailable()) {
+            const mobileClaimId: string = fetchedAttributes?.find(
+                (attribute: Claim) =>
+                    attribute?.[ClaimManagementConstants.CLAIM_URI_ATTRIBUTE_KEY] ===
+                    ClaimManagementConstants.MOBILE_CLAIM_URI
+            )?.id || "";
+
+            return (
+                <Trans
+                    i18nKey="user:modals.addUserWizard.askPassword.mobileNumberAlreadyExists"
+                >
+                    Please enable mobile as required field <Link
+                        onClick={ () => {
+                            const editClaimPath: string = AppConstants.getPaths()
+                                .get("LOCAL_CLAIMS_EDIT")
+                                .replace(":id", mobileClaimId);
+
+                            history.push(editClaimPath);
+                        } }
+                        external={ false }
+                    >Mobile Attribute Settings</Link>.
+                </Trans>
+            );
+        }
+
         if (!isEmailFilled || !isValidEmail) {
             return t(
                 "user:modals.addUserWizard.askPassword.emailInvalid"
@@ -1032,29 +1086,33 @@ export const AddUserUpdated: React.FunctionComponent<AddUserProps> = (
                     className="mb-4"
                 >
                     {
-                        (!emailVerificationEnabled || (!isEmailRequired && !isValidEmail)) ? (
-                            <Popup
-                                basic
-                                inverted
-                                position="top center"
-                                content={ resolveAskPasswordOptionPopupContent() }
-                                hoverable
-                                trigger={
-                                    (
-                                        <Menu.Item
-                                            name={ getMenuItemText() }
-                                            disabled
-                                        />
-                                    )
-                                }
-                            />
-                        ) : (
-                            <Menu.Item
-                                name={ getMenuItemText() }
-                                active={ askPasswordOption === AskPasswordOptionTypes.EMAIL }
-                                onClick={ () => setAskPasswordOption(AskPasswordOptionTypes.EMAIL) }
-                            />
-                        )
+                        (!emailVerificationEnabled ||
+                         (!isEmailRequired && !isValidEmail
+                            && askPasswordVerificationOption !== VerificationOption.SMS_OTP) ||
+                         (askPasswordVerificationOption === VerificationOption.SMS_OTP &&
+                          !isMobileFieldAvailable())) ? (
+                                <Popup
+                                    basic
+                                    inverted
+                                    position="top center"
+                                    content={ resolveAskPasswordOptionPopupContent() }
+                                    hoverable
+                                    trigger={
+                                        (
+                                            <Menu.Item
+                                                name={ getMenuItemText() }
+                                                disabled
+                                            />
+                                        )
+                                    }
+                                />
+                            ) : (
+                                <Menu.Item
+                                    name={ getMenuItemText() }
+                                    active={ askPasswordOption === AskPasswordOptionTypes.EMAIL }
+                                    onClick={ () => setAskPasswordOption(AskPasswordOptionTypes.EMAIL) }
+                                />
+                            )
                     }
                     <Menu.Item
                         name={ t("user:modals.addUserWizard" +

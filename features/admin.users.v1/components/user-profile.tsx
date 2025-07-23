@@ -221,7 +221,6 @@ export const UserProfile: FunctionComponent<UserProfilePropsInterface> = (
         if (connectorProperties && Array.isArray(connectorProperties) && connectorProperties?.length > 0) {
 
             const accountConfigSettings: AccountConfigSettingsInterface = { ...configSettings } ;
-            console.log("Connector properties: ", connectorProperties);
 
             for (const property of connectorProperties) {
                 if (PASSWORD_RESET_PROPERTIES.includes(property.name)) {
@@ -1153,22 +1152,28 @@ export const UserProfile: FunctionComponent<UserProfilePropsInterface> = (
                 }
             }
             if (accountLockedReason === AccountLockedReason.PENDING_ASK_PASSWORD) {
-                console.log("Pending ask password state detected.");
                 if (isAskPasswordEmailOTPEnabled()) {
-                    console.log("1");
+
                     return RecoveryScenario.ASK_PASSWORD_VIA_EMAIL_OTP;
                 }
                 if (isAskPasswordSMSOTPEnabled()) {
-                    console.log("2");
+
                     return RecoveryScenario.ASK_PASSWORD_VIA_SMS_OTP;
                 }
-                console.log("3");
+
                 return RecoveryScenario.ASK_PASSWORD;
             }
         }
         // For non-locked accounts, use the account state to determine the scenario.
         if (!accountLocked && accountState) {
             if (accountState === AccountState.PENDING_AP) {
+                if (isAskPasswordEmailOTPEnabled()) {
+                    return RecoveryScenario.ASK_PASSWORD_VIA_EMAIL_OTP;
+                }
+                if (isAskPasswordSMSOTPEnabled()) {
+                    return RecoveryScenario.ASK_PASSWORD_VIA_SMS_OTP;
+                }
+
                 return RecoveryScenario.ASK_PASSWORD;
             }
         }
@@ -1196,9 +1201,30 @@ export const UserProfile: FunctionComponent<UserProfilePropsInterface> = (
                 disabled={ isSubmitting }
                 data-testid={ `${ testId }-resend-link` }
             >
-                { t("user:resendCode.resend") }
+                { resolveResendButtonText(recoveryScenario) }
             </LinkButton>
         );
+    };
+
+    /**
+     * Resolves the appropriate button text based on the recovery scenario.
+     *
+     * @param recoveryScenario - The recovery scenario to resolve the button text for.
+     * @returns The resolved button text.
+     */
+    const resolveResendButtonText = (recoveryScenario: string): string => {
+        switch (recoveryScenario) {
+            case RecoveryScenario.ASK_PASSWORD_VIA_SMS_OTP:
+            case RecoveryScenario.ADMIN_FORCED_PASSOWRD_RESET_VIA_SMS_OTP:
+                return "Send SMS";
+            case RecoveryScenario.ASK_PASSWORD_VIA_EMAIL_OTP:
+            case RecoveryScenario.ADMIN_FORCED_PASSWORD_RESET_VIA_OTP:
+                return t("user:resendCode.resend");
+            case RecoveryScenario.ASK_PASSWORD:
+            case RecoveryScenario.ADMIN_FORCED_PASSWORD_RESET_VIA_EMAIL_LINK:
+            default:
+                return t("user:resendCode.resend");
+        }
     };
 
     /**

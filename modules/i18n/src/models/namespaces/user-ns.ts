@@ -214,6 +214,7 @@ export interface userNS {
             subTitle: string;
             askPassword: {
                 emailVerificationDisabled: string;
+                mobileNumberAlreadyExists: string;
                 emailInvalid: string;
                 alphanumericUsernameEnabled: string;
                 inviteViaEmail: string;

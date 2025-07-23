@@ -229,7 +229,8 @@ export const user: userNS = {
                     "for user password setup from <1>Login & Registration settings</1>.",
                 inviteOffline: "Invite offline",
                 inviteViaEmail: "Invite via email",
-                inviteViaSMS: "Invite via SMS"
+                inviteViaSMS: "Invite via SMS",
+                mobileNumberAlreadyExists: "Mobile number is required for SMS OTP, please enable mobile number attribute from <1>Attributes</1>."
             },
             buttons: {
                 next: "Next",

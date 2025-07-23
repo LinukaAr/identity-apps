@@ -6825,6 +6825,7 @@ export interface ConsoleNS {
                         subTitle: string;
                         askPassword: {
                             emailVerificationDisabled: string;
+                            mobileNumberAlreadyExists: string;
                             emailInvalid: string;
                             alphanumericUsernameEnabled: string;
                             inviteViaEmail: string;
