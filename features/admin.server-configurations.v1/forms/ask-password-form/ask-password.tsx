@@ -213,7 +213,7 @@ export const AskPasswordForm: FunctionComponent<AskPasswordFormPropsInterface> =
             otpLength: undefined
         };
 
-        if (!values.expiryTime) {
+        if (!values.expiryTime && values.expiryTime !== "0" && values.expiryTime !== "-1") {
             // Check for required error.
             errors.expiryTime = t("extensions:manage.serverConfigurations.userOnboarding." +
                 "inviteUserToSetPassword.form.fields.expiryTime.validations.empty");
@@ -221,13 +221,17 @@ export const AskPasswordForm: FunctionComponent<AskPasswordFormPropsInterface> =
             // Check for invalid input.
             errors.expiryTime = t("extensions:manage.serverConfigurations.userOnboarding." +
                 "inviteUserToSetPassword.form.fields.expiryTime.validations.invalid");
-        } else if ((parseInt(values.expiryTime, 10) < GovernanceConnectorConstants
-            .ASK_PASSWORD_FORM_FIELD_CONSTRAINTS.EXPIRY_TIME_MIN_VALUE)
-            || (parseInt(values.expiryTime, 10) > GovernanceConnectorConstants
-                .ASK_PASSWORD_FORM_FIELD_CONSTRAINTS.EXPIRY_TIME_MAX_VALUE)) {
-            // Check for invalid range.
-            errors.expiryTime = t("extensions:manage.serverConfigurations.userOnboarding." +
-                "inviteUserToSetPassword.form.fields.expiryTime.validations.range");
+        } else {
+            const expiryTimeValue: number = parseInt(values.expiryTime, 10);
+
+            // Allow -1 for indefinite expiry, 0 for immediate expiry, or values within the normal range
+            if (expiryTimeValue !== -1 && expiryTimeValue !== 0 &&
+                (expiryTimeValue < 1 || expiryTimeValue > GovernanceConnectorConstants
+                    .ASK_PASSWORD_FORM_FIELD_CONSTRAINTS.EXPIRY_TIME_MAX_VALUE)) {
+                // Check for invalid range.
+                errors.expiryTime = t("extensions:manage.serverConfigurations.userOnboarding." +
+                    "inviteUserToSetPassword.form.fields.expiryTime.validations.range");
+            }
         }
 
         if (!values.otpLength) {
@@ -301,24 +305,6 @@ export const AskPasswordForm: FunctionComponent<AskPasswordFormPropsInterface> =
                 uncontrolledForm={ false }
             >
 
-                <Field.Checkbox
-                    ariaLabel="enableInviteUserToSetPassword"
-                    name="enableInviteUserToSetPassword"
-                    label={ t("extensions:manage.serverConfigurations.userOnboarding." +
-                        "inviteUserToSetPassword.form.fields.enableInviteUserToSetPassword.label") }
-                    required={ false }
-                    readOnly={ readOnly }
-                    width={ 10 }
-                    listen={ (value: boolean) => setIsInviteUserToSetPasswordEnabled(value) }
-                    data-testid={ `${ testId }-enable-invite-user-to-set-password` }
-                    data-componentid={ `${ testId }-enable-invite-user-to-set-password` }
-                />
-                <Hint>
-                    { t("extensions:manage.serverConfigurations.userOnboarding." +
-                            "inviteUserToSetPassword.form.fields.enableInviteUserToSetPassword.hint") as ReactNode }
-                </Hint>
-                <br/>
-
                 <Heading as="h5">
                     { t("extensions:manage.serverConfigurations.userOnboarding." +
                     "inviteUserToSetPassword.form.fields.emailAskPasswordOptions.header") }
@@ -345,10 +331,7 @@ export const AskPasswordForm: FunctionComponent<AskPasswordFormPropsInterface> =
                     ariaLabel="expiryTime"
                     inputType="number"
                     name="expiryTime"
-                    min={
-                        GovernanceConnectorConstants.ASK_PASSWORD_FORM_FIELD_CONSTRAINTS
-                            .EXPIRY_TIME_MIN_VALUE
-                    }
+                    min={ -1 }
                     max={
                         GovernanceConnectorConstants.ASK_PASSWORD_FORM_FIELD_CONSTRAINTS
                             .EXPIRY_TIME_MAX_VALUE
@@ -356,7 +339,8 @@ export const AskPasswordForm: FunctionComponent<AskPasswordFormPropsInterface> =
                     label={ t("extensions:manage.serverConfigurations.userOnboarding." +
                                 "inviteUserToSetPassword.form.fields.expiryTime.label") }
                     placeholder={ t("extensions:manage.serverConfigurations.userOnboarding." +
-                                        "inviteUserToSetPassword.form.fields.expiryTime.placeholder") }
+                                        "inviteUserToSetPassword.form.fields.expiryTime.placeholder") +
+                                        " (-1: indefinite, 0: immediate)" }
                     required={ false }
                     maxLength={
                         GovernanceConnectorConstants.ASK_PASSWORD_FORM_FIELD_CONSTRAINTS
@@ -377,8 +361,9 @@ export const AskPasswordForm: FunctionComponent<AskPasswordFormPropsInterface> =
                     <label className="ui label">mins</label>
                 </Field.Input>
                 <Hint>
-                    { t("extensions:manage.serverConfigurations.accountRecovery." +
-                            "passwordRecovery.form.fields.expiryTime.hint") as ReactNode }
+                    { t("extensions:manage.serverConfigurations.userOnboarding." +
+                            "inviteUserToSetPassword.form.fields.expiryTime.hint") as ReactNode }
+                    <br />
                 </Hint>
 
                 <br/>

@@ -411,7 +411,9 @@ export const user: userNS = {
             pendingSelfRegistration: "The account is locked pending user verification via the self-registration email."
         },
         accountState: {
-            pendingAskPassword: "The user has not yet set a password using the setup email sent."
+            pendingAskPassword: "The user has not yet set a password using the setup email sent.",
+            pendingAskPasswordEmailOTP: "The user has not yet set a password using the email OTP sent.",
+            pendingAskPasswordSMSOTP: "The user has not yet set a password using the SMS OTP sent."
         },
         confirmationModals: {
             deleteAttributeConfirmation: {

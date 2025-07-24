@@ -278,6 +278,7 @@ export class ServerConfigurationsConstants {
     public static readonly ORGANIZATION_SELF_SERVICE: string = "organization-self-service";
     public static readonly SELF_SIGNUP: string = "self-sign-up";
     public static readonly SSO_LOGIN_RECAPTCHA: string = "sso.login.recaptcha";
+    public static readonly EMAIL_VERIFICATION: string = "user-email-verification";
 
     /**
 	 * Login policies - account locking API Keyword constants.

@@ -391,6 +391,8 @@ export interface userNS {
         };
         accountState: {
             pendingAskPassword: string;
+            pendingAskPasswordSMSOTP: string;
+            pendingAskPasswordEmailOTP: string;
         };
         fields: {
             createdDate: string;

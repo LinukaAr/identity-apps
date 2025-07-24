@@ -1106,6 +1106,21 @@ export const UserProfile: FunctionComponent<UserProfilePropsInterface> = (
         }
 
         if (accountLockedReason) {
+            // For ask password related locks, provide specific messages based on recovery scenario
+            if (accountLockedReason === AccountLockedReason.PENDING_ASK_PASSWORD) {
+                const recoveryScenario: string | null = resolveRecoveryScenario();
+
+                switch (recoveryScenario) {
+                    case RecoveryScenario.ASK_PASSWORD_VIA_SMS_OTP:
+                        return t("user:profile.accountState.pendingAskPasswordSMSOTP");
+                    case RecoveryScenario.ASK_PASSWORD_VIA_EMAIL_OTP:
+                        return t("user:profile.accountState.pendingAskPasswordEmailOTP");
+                    case RecoveryScenario.ASK_PASSWORD:
+                    default:
+                        return ACCOUNT_LOCK_REASON_MAP[accountLockedReason] ?? ACCOUNT_LOCK_REASON_MAP["DEFAULT"];
+                }
+            }
+
             return ACCOUNT_LOCK_REASON_MAP[accountLockedReason] ?? ACCOUNT_LOCK_REASON_MAP["DEFAULT"];
         }
 
@@ -1216,7 +1231,6 @@ export const UserProfile: FunctionComponent<UserProfilePropsInterface> = (
         switch (recoveryScenario) {
             case RecoveryScenario.ASK_PASSWORD_VIA_SMS_OTP:
             case RecoveryScenario.ADMIN_FORCED_PASSOWRD_RESET_VIA_SMS_OTP:
-                return "Send SMS";
             case RecoveryScenario.ASK_PASSWORD_VIA_EMAIL_OTP:
             case RecoveryScenario.ADMIN_FORCED_PASSWORD_RESET_VIA_OTP:
                 return t("user:resendCode.resend");
@@ -1224,6 +1238,25 @@ export const UserProfile: FunctionComponent<UserProfilePropsInterface> = (
             case RecoveryScenario.ADMIN_FORCED_PASSWORD_RESET_VIA_EMAIL_LINK:
             default:
                 return t("user:resendCode.resend");
+        }
+    };
+
+    /**
+     * Resolves the appropriate alert message for pending ask password state based on the recovery scenario.
+     *
+     * @returns The resolved alert message.
+     */
+    const resolvePendingAskPasswordMessage = (): string => {
+        const recoveryScenario: string | null = resolveRecoveryScenario();
+
+        switch (recoveryScenario) {
+            case RecoveryScenario.ASK_PASSWORD_VIA_SMS_OTP:
+                return t("user:profile.accountState.pendingAskPasswordSMSOTP");
+            case RecoveryScenario.ASK_PASSWORD_VIA_EMAIL_OTP:
+                return t("user:profile.accountState.pendingAskPasswordEmailOTP");
+            case RecoveryScenario.ASK_PASSWORD:
+            default:
+                return t("user:profile.accountState.pendingAskPassword");
         }
     };
 
@@ -1356,7 +1389,7 @@ export const UserProfile: FunctionComponent<UserProfilePropsInterface> = (
                 {
                     (!accountLocked && isPendingAskPasswordState) && (
                         <Alert severity="warning" className="user-profile-alert">
-                            { t("user:profile.accountState.pendingAskPassword") }
+                            { resolvePendingAskPasswordMessage() }
                             <ResendLink />
                         </Alert>
                     )
